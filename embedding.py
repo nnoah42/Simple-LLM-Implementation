@@ -1,19 +1,23 @@
-import re
-import tiktoken
-from torch.utils.data import Dataset, DataLoader
-import GPTDatasetV1
-from create_dataloader_v1 import create_dataloader_v1
+import torch
+from torch import nn
 
-tokenizer = tiktoken.get_encoding("gpt2")
+class InputEmbedding(nn.Module):
+    def __init__(self, vocab_size, context_length, embedding_dim):
+        super().__init__()
+        self.token_embedding = nn.Embedding(
+            vocab_size, 
+            embedding_dim
+            )
+        self.position_embedding = nn.Embedding(
+            context_length,
+            embedding_dim
+        )
 
-with open("the-verdict.txt", "r", encoding="utf-8") as f:
-    raw_text = f.read()
-dataloader = create_dataloader_v1(
-    raw_text, batch_size=1, max_length=4, stride=1, shuffle=False)
-
-data_iter = iter(dataloader)
-first_batch = next(data_iter)
-print(first_batch)
-
-second_batch = next(data_iter)
-print(second_batch)
+    def forward(self, token_ids):
+        batch_size, sequence_length = token_ids.shape
+        token_vectors = self.token_embedding(token_ids)
+        positions = torch.arange(
+            sequence_length
+        )
+        position_vectors = self.position_embedding(positions)
+        return token_vectors + position_vectors
