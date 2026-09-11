@@ -49,6 +49,22 @@ def main():
 		average_loss = total_loss / len(dataloader)
 		print(f"epoch {epoch + 1}: loss={average_loss:.3f}")
 
+	torch.save(
+		{
+			"model_state_dict": model.state_dict(),
+			"model_config": {
+				"vocab_size": vocab_size,
+				"context_length": context_length,
+				"embedding_dim": 128,
+				"num_heads": 4,
+				"num_layers": 2,
+				"dropout": 0.1,
+			},
+		},
+		"model.pt",
+	)
+	print("saved model to model.pt")
+
 
 if __name__ == "__main__":
 	main()
