@@ -1,3 +1,4 @@
+# NOT CURRENTLY USED. TIKTOKEN IS USED INSTEAD.
 import re
 
 class SimpleTokenizer:
